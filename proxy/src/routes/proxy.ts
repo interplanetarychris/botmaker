@@ -80,6 +80,17 @@ export function registerProxyRoutes(
         : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body), 'utf8');
     }
 
+    // Inject vendor-specific fields into JSON request body
+    if (body && vendorConfig.bodyInject) {
+      try {
+        const parsed = JSON.parse(body.toString('utf8'));
+        Object.assign(parsed, vendorConfig.bodyInject);
+        body = Buffer.from(JSON.stringify(parsed), 'utf8');
+      } catch {
+        // Not valid JSON — forward as-is
+      }
+    }
+
     // Forward to upstream
     try {
       const statusCode = await forwardToUpstream(

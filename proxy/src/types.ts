@@ -29,6 +29,8 @@ export interface VendorConfig {
   basePath: string;
   authHeader: string;
   authFormat: (key: string) => string;
+  /** Fields to inject into JSON request bodies before forwarding */
+  bodyInject?: Record<string, unknown>;
 }
 
 export const VENDOR_CONFIGS: Record<string, VendorConfig> = {
@@ -61,5 +63,11 @@ export const VENDOR_CONFIGS: Record<string, VendorConfig> = {
     basePath: '/api/v1',
     authHeader: 'Authorization',
     authFormat: (key) => `Bearer ${key}`,
+    bodyInject: {
+      provider: {
+        order: ['moonshotai'],
+        allow_fallbacks: true,
+      },
+    },
   },
 };
