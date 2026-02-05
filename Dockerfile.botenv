@@ -29,5 +29,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     iproute2 netcat-openbsd dnsutils \
  && rm -rf /var/lib/apt/lists/*
 
+# Entrypoint: load /run/secrets/* as env vars, then exec into OpenClaw
+COPY scripts/load-secrets.sh /usr/local/bin/load-secrets.sh
+RUN chmod +x /usr/local/bin/load-secrets.sh
+
 # Switch back to non-root user
 USER node
+
+ENTRYPOINT ["/usr/local/bin/load-secrets.sh"]
